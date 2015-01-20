@@ -638,7 +638,16 @@ RED.view = (function() {
                             nn[d] = nn._def.defaults[d].value;
                         }
                     }
-    
+
+                    // Add by MCF, set MCF function to node instance
+                    if (typeof nn._def.old_label != 'undefined') {
+                      nn.old_label = nn._def.old_label;
+                    }
+                    if (typeof nn._def.onflowupdate != 'undefined') {
+                      nn.onflowupdate = nn._def.onflowupdate;
+                    }
+                    // Add by MCF, end
+
                     if (nn._def.onadd) {
                         nn._def.onadd.call(nn);
                     }
@@ -819,6 +828,12 @@ RED.view = (function() {
             for (var i=0;i<moving_set.length;i++) {
                 var node = moving_set[i].n;
                 node.selected = false;
+
+                // Add by MCF. Update corresponding flow of the deleted node
+                console.log('in view.js 1');
+                node._def.onflowupdate("", node.flow);
+                // Add by MCF, end
+
                 if (node.type != "subflow") {
                     if (node.x < 0) {
                         node.x = 25
@@ -1696,6 +1711,10 @@ RED.view = (function() {
         } else {
             $("#btn-deploy").addClass("disabled");
         }
+
+        // Add by MCF. Enable deploy always
+        $("#btn-deploy").removeClass("disabled").addClass("btn-danger");
+        // Add by MCF, end
     }
 
     /**

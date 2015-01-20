@@ -16,6 +16,24 @@
 
 RED.palette = (function() {
 
+    // Add by MCF. Add device and flow tag to palette
+    var mcf = ['device', 'flow'];
+    function createMcfContainer(category){
+        var escapedCategory = category.replace(" ","_");
+        $("#palette-container").append('<div class="palette-category">'+
+            '<div id="header-'+category+'" class="palette-header"><i class="expanded fa fa-caret-down"></i><span>'+category.replace("_"," ")+'</span></div>'+
+            '<div class="palette-content" id="palette-base-category-'+category+'">'+
+            '</div>'+
+            '</div>');
+
+        $("#header-"+category).on('click', function(e) {
+            $(this).next().slideToggle();
+            $(this).children("i").toggleClass("expanded");
+        });
+    }
+    mcf.forEach(createMcfContainer);
+    // Add by MCF, end
+
     var exclusion = ['config','unknown','deprecated'];
     var core = ['input', 'output', 'function', 'subflows', 'social', 'storage', 'analysis', 'advanced'];
 

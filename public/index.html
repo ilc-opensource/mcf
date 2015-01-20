@@ -92,6 +92,10 @@
     <form class="form-horizontal">
         <div id="node-dialog-confirm-deploy-config" style="text-align: center; padding-top: 30px;">
          Some of the nodes are not properly configured. Are you sure you want to deploy?
+         <!-- Add by MCF, begin -->
+         <ul style="width: 300px; margin: auto; text-align: left;" id="node-dialog-confirm-deploy-invalid-list"></ul>
+         You can't deploy!
+         <!-- Add by MCF, end -->
         </div>
         <div id="node-dialog-confirm-deploy-unknown" style="text-align: center; padding-top: 10px;">
          The workspace contains some unknown node types:
@@ -100,6 +104,12 @@
         </div>
     </form>
 </div>
+
+<!-- Add by MCF, begin -->
+<div id="deploy-dialog-error" class="hide">
+    Can't deploy without select flow or device!
+</div>
+<!-- Add by MCF, end -->
 
 <div id="node-help" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="node-help-label" aria-hidden="true">
   <div class="modal-header">
@@ -243,6 +253,10 @@
 <script src="red/main.js"></script>
 <script src="red/comms.js"></script>
 <script src="red/ui/state.js"></script>
+<!-- Add by MCF, begin -->
+<script src="red/devList.js"></script>
+<script src="red/flowList.js"></script>
+<!-- Add by MCF, end -->
 <script src="red/nodes.js"></script>
 <script src="red/history.js"></script>
 <script src="red/validators.js"></script>

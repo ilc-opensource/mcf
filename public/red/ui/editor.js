@@ -204,7 +204,14 @@ RED.editor = (function() {
                                                         configNode.users.push(editing_node);
                                                     }
                                                 }
-    
+
+                                                // Add by MCF. Update corresponding flow of the editing node
+                                                if (d == "flow") {
+                                                    console.log('in editor.js 1');
+                                                    editing_node._def.onflowupdate(newValue, editing_node[d]);
+                                                }
+                                                // Add by MCF, end
+
                                                 changes[d] = editing_node[d];
                                                 editing_node[d] = newValue;
                                                 changed = true;
@@ -493,7 +500,11 @@ RED.editor = (function() {
             });
             $( "#dialog" ).dialog("option","buttons",buttons);
         }
-        $("#dialog-form").html($("script[data-template-name='"+type+"']").html());
+        // Add by MCF. Add an input to declare flow
+        //$("#dialog-form").html($("script[data-template-name='"+type+"']").html());
+        var flow = '<div class="form-row"><label for="node-input-flow"><i class="icon-tag"></i> Flow</label><input type="text" id="node-input-flow" placeholder="flow"></div>';
+        $("#dialog-form").html(flow+$("script[data-template-name='"+node.type+"']").html());
+        // Add by MCF, end
         $('<input type="text" style="display: none;" />').appendTo("#dialog-form");
         prepareEditDialog(node,node._def,"node-input");
         

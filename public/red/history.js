@@ -36,6 +36,10 @@ RED.history = (function() {
                 if (ev.t == 'add') {
                     if (ev.nodes) {
                         for (i=0;i<ev.nodes.length;i++) {
+                            // Add by MCF. Update corresponding flow of the undo node
+                            console.log('in history.js 1');
+                            RED.nodes.node(ev.nodes[i])._def.onflowupdate("", RED.nodes.node(ev.nodes[i]).flow);
+                            // Add by MCF, end
                             RED.nodes.remove(ev.nodes[i]);
                         }
                     }
@@ -107,6 +111,11 @@ RED.history = (function() {
                     }
                     if (ev.nodes) {
                         for (i=0;i<ev.nodes.length;i++) {
+                            // Add by MCF. Update corresponding flow of the undo node
+                            console.log('in history.js 2');
+                            RED.nodes.node(ev.nodes[i])._def.onflowupdate(RED.nodes.node(ev.nodes[i]).flow, "");
+                            // Add by MCF, end
+
                             RED.nodes.add(ev.nodes[i]);
                         }
                     }

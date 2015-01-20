@@ -43,14 +43,26 @@ var RED = (function() {
     });
 
     function save(force) {
-        if (RED.view.dirty()) {
+        // Add by MCF. check whether a device and flow is selected
+        if (!(RED.flowList.get() != null && RED.devList.get() != null)) {
+            $("#deploy-dialog-error").dialog("open");
+            return;
+        }
+        // Add by MCF, end
+
+        // Add by MCF. TODO: avoid redeploy a flow to the same device
+        if (true || RED.view.dirty()) {
             //$("#debug-tab-clear").click();  // uncomment this to auto clear debug on deploy
 
             if (!force) {
                 var invalid = false;
                 var unknownNodes = [];
+                var invalidNodes = [];
                 RED.nodes.eachNode(function(node) {
                     invalid = invalid || !node.valid;
+                    if (!node.valid) {
+                        invalidNodes.push(node.flow+"::"+node.name);
+                    }
                     if (node.type === "unknown") {
                         if (unknownNodes.indexOf(node.name) == -1) {
                             unknownNodes.push(node.name);
@@ -67,6 +79,8 @@ var RED = (function() {
                     } else {
                         $( "#node-dialog-confirm-deploy-config" ).show();
                         $( "#node-dialog-confirm-deploy-unknown" ).hide();
+                        var list = "<li>"+invalidNodes.join("</li><li>")+"</li>";
+                        $( "#node-dialog-confirm-deploy-invalid-list" ).html(list);
                     }
                     $( "#node-dialog-confirm-deploy" ).dialog( "open" );
                     return;
@@ -77,6 +91,10 @@ var RED = (function() {
             $("#btn-icn-deploy").removeClass('fa-download');
             $("#btn-icn-deploy").addClass('spinner');
             RED.view.dirty(false);
+
+            // Add by MCF. Add target device
+            nns.push({TargetDev:RED.devList.get()});
+            // Add by MCF, end
 
             $.ajax({
                 url:"flows",
@@ -117,6 +135,24 @@ var RED = (function() {
     }
 
     $('#btn-deploy').click(function() { save(); });
+
+    // Add by MCF, begin
+    $( "#deploy-dialog-error" ).dialog({
+            title: "Deploy error",
+            modal: true,
+            autoOpen: false,
+            width: 530,
+            height: 230,
+            buttons: [
+                {
+                    text: "Cancel",
+                    click: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            ]
+    });
+    // Add by MCF, end
 
     $( "#node-dialog-confirm-deploy" ).dialog({
             title: "Confirm deploy",
@@ -316,6 +352,7 @@ var RED = (function() {
         RED.keyboard.add(/* ? */ 191,{shift:true},function(){showHelp();d3.event.preventDefault();});
         loadSettings();
         RED.comms.connect();
+        RED.devList.start();
     });
 
     if ((window.location.hostname !== "localhost") && (window.location.hostname !== "127.0.0.1")) {

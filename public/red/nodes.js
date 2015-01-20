@@ -98,6 +98,19 @@ RED.nodes = (function() {
                 }
             },
             registerNodeType: function(nt,def) {
+                // Add by MCF. Add flow attribute to each node instance, update its shown label
+                //def.defaults["old_label"] = {value:def.label};
+                def.old_label = def.label;
+                def.defaults["flow"] = {value:"", required:true};
+                if (def.category != "config") {
+                    def.label = function() {return this.flow+"::"+this.old_label();}
+                }
+                // Add onflowupdate to def to be called when editing, delete, importing node
+                def.onflowupdate = function(newValue, oldValue) {
+                    RED.flowList.update(newValue, oldValue);
+                };
+                // Add by MCF, end
+
                 nodeDefinitions[nt] = def;
                 if (def.category != "subflows") {
                     nodeSets[typeToId[nt]].added = true;
@@ -477,10 +490,23 @@ RED.nodes = (function() {
                 nns.push(convertNode(configNodes[i], true));
             }
         }
-        for (i=0;i<nodes.length;i++) {
-            var node = nodes[i];
-            nns.push(convertNode(node, true));
+        // Add by MCF. Old implementations push all nodes in
+        // New push all nodes belong to one flow in
+        if (RED.flowList.get() != null) {
+            for (var i in nodes) {
+                var node = nodes[i];
+                if (node.flow == RED.flowList.get()) {
+                    nns.push(convertNode(node, true));
+                }
+            }
+        } else {
+            for (i=0;i<nodes.length;i++) {
+                var node = nodes[i];
+                nns.push(convertNode(node, true));
+            }
         }
+        // Add by MCF, end
+
         return nns;
     }
 
@@ -698,6 +724,11 @@ RED.nodes = (function() {
                             }
                         }
                         addNode(node);
+
+                        // Add by MCF. Update corresponding flow of the imported node
+                        node._def.onflowupdate(node.flow, "");
+                        // Add by MCF, end
+
                         RED.editor.validateNode(node);
                         node_map[n.id] = node;
                         if (node._def.category != "config") {
