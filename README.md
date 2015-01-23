@@ -1,4 +1,5 @@
 # Mobile collaborative framework (MCF)
+![picture2](https://cloud.githubusercontent.com/assets/7992647/5872187/5e041504-a323-11e4-8876-f95707f8c50d.png)
 A javascript based simple framework for device composition, compose application logics and interoperate among distributed devices with graphic user interfaces.
 
 # Quick Start
