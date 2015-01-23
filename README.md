@@ -1,3 +1,16 @@
+# Mobile collaborative framework (MCF)
+A javascript based simple framework for device composition, compose application logics and interoperate among distributed devices with graphic user interfaces.
+
+# Quick Start
+1. download the zip and unzip, or git clone
+2. cd mcf
+3. npm install
+4. node red.js
+5. Open http://localhost:1880
+6. Create a App with two flows, e.g. flow1 and flow2. Wire nodes of these flows
+7. Deploy flow1 and flow2 to different devices respectively
+8. Enjoy it.
+
 # Node-RED
 
 http://nodered.org
