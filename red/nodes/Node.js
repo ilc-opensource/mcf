@@ -23,6 +23,8 @@ var redUtil = require("../util");
 var flows = require("./flows");
 var comms = require("../comms");
 
+var deviceServer = require("../deviceServer");
+
 function Node(n) {
     this.id = n.id;
     flows.add(this);
@@ -88,6 +90,11 @@ Node.prototype.send = function(msg) {
             node = flows.get(this._wire);
             if (node) {
                 node.receive(msg);
+            } else {
+                // Add by MCF, node is on remote device
+                console.log("Send flow single msg to node on remote devices");
+                deviceServer.send(this._wire, msg);
+                // Add by MCF, end
             }
             return;
         } else {
@@ -125,6 +132,11 @@ Node.prototype.send = function(msg) {
                                 msgSent = true;
                             }
                         }
+                    } else {
+                        // Add by MCF, node is on remote device
+                        console.log("Send flow array msg to node on remote devices");
+                        deviceServer.send(wires[j], redUtil.cloneMessage(msgs[k]));
+                        // Add by MCF, end
                     }
                 }
             }

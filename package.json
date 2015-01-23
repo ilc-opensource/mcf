@@ -45,7 +45,9 @@
         "imap":"0.8.13",
         "request":"2.42.0",
         "colors":"0.6.2",
-        "is-utf8":"0.2.0"
+        "is-utf8":"0.2.0",
+        "node-discover":"*",
+        "randomstring":"*"
     },
     "devDependencies": {
         "grunt": "0.4.5",

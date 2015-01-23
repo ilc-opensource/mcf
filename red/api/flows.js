@@ -21,18 +21,35 @@ var util = require("util");
 
 var redNodes = require("../nodes");
 var settings = require("../settings");
+var deviceServer = require("../deviceServer");
+var localDev = require("../localDev");
 
 module.exports = {
     get: function(req,res) {
         res.json(redNodes.getFlows());
     },
     post: function(req,res) {
-        var flows = req.body;
+        var deployDev = req.body.pop().TargetDev;
+        console.log("targetDevice="+deployDev+"; localDevice="+localDev);
+        if (deployDev == localDev) {
+            var flows = req.body;
+            redNodes.setFlows(flows).then(function() {
+                res.json(204);
+            }).otherwise(function(err) {
+                util.log("[red] Error saving flows : "+err);
+                res.send(500,err.message);
+            });
+        } else {
+            deviceServer.deploy(deployDev, req.body);
+            res.json(204);
+        }
+
+        /*var flows = req.body;
         redNodes.setFlows(flows).then(function() {
             res.send(204);
         }).otherwise(function(err) {
             util.log("[red] Error saving flows : "+err);
             res.send(500,err.message);
-        });
+        });*/
     }
 }

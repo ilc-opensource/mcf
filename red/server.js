@@ -23,6 +23,10 @@ var redNodes = require("./nodes");
 var comms = require("./comms");
 var storage = require("./storage");
 
+var deviceServer = require("./deviceServer");
+var discovery = require("./discovery.js");
+var wsServer = require("./protocol/ws");
+
 var app = null;
 var nodeApp = null;
 var server = null;
@@ -34,6 +38,11 @@ function init(_server,_settings) {
 
     comms.init(_server,_settings);
 
+    // Add by MCF, begin
+    deviceServer.init(_server,_settings);
+    discovery.init(_server,_settings);
+    wsServer.init(_server,_settings);
+    // Add by MCF, end
     nodeApp = express();
     app = express();
 
@@ -101,6 +110,11 @@ function start() {
                 console.log(err);
             });
             comms.start();
+            // Add by MCF, start
+            deviceServer.start();
+            discovery.start();
+            wsServer.start();
+            // Add by MCF, end
         });
     }).otherwise(function(err) {
         defer.reject(err);

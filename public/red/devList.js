@@ -55,11 +55,13 @@ RED.devList = function() {
     var ws;
     function connectWS() {
         var path = document.location.hostname+":"+document.location.port+document.location.pathname;
-        path = path+(path.slice(-1) == "/"?"":"/")+"devList";
+        path = path+(path.slice(-1) == "/"?"":"/")+"devWSSever";
         path = "ws"+(document.location.protocol=="https:"?"s":"")+"://"+path;
         ws = new WebSocket(path);
         ws.onopen = function() {
             console.log("Connected to ws server");
+            // Send msg to notify local ws server, which is the ws connection to UI
+            ws.send(JSON.stringify({topic:"devUpdate"}));
         }
         ws.onmessage = function(message) {
             var msg = JSON.parse(message.data);
@@ -71,7 +73,7 @@ RED.devList = function() {
                 $("#palette-base-category-device").empty();
 
                 // Create dev elements
-                var deviceList = JSON.parse(msg.data);
+                var deviceList = msg.data;
                 console.log("deviceList.length="+deviceList.length);
                 for (var i=0; i<deviceList.length; i++) {
                     createDev(deviceList[i]);
